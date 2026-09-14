@@ -63,7 +63,7 @@ SHEET_XLSX_URL = _secret(
 MENDOAN_PATH = Path(__file__).parent / "assets" / "bara-mendoan.png"
 
 st.set_page_config(
-    page_title="Dashboard Statistik Daerah · BPS",
+    page_title="NewBaramendoan",
     page_icon=str(MENDOAN_PATH) if MENDOAN_PATH.exists() else "📊",
     layout="wide",
     initial_sidebar_state="collapsed",   # sidebar tersembunyi saat dibuka
@@ -227,6 +227,11 @@ header[data-testid="stHeader"] {{ background:transparent; }}
 }}
 .hero h1 {{ font-size:1.45rem; font-weight:800; margin:0 0 4px; }}
 .hero p {{ margin:0; opacity:.88; font-size:.86rem; }}
+/* subjudul tagline: melekat rapat di bawah judul, beda level dari baris konten */
+.hero p.subjudul {{
+  font-style:italic; font-weight:600; opacity:.95;
+  font-size:.8rem; letter-spacing:.015em; margin:0 0 10px;
+}}
 .hero p.fokus {{ margin-top:4px; opacity:.75; font-size:.78rem; }}
 .hero .badge-stack {{
   display:flex; flex-direction:column; align-items:flex-end; gap:6px;
@@ -255,6 +260,7 @@ header[data-testid="stHeader"] {{ background:transparent; }}
   .hero .hero-side {{ align-items:flex-start; }}
   .hero h1 {{ font-size:1.12rem; }}
   .hero p {{ display:inline; font-size:.8rem; }}
+  .hero p.subjudul {{ font-size:.78rem; margin:0 10px 0 6px; }}
   .hero p.fokus {{ font-size:.76rem; }}
   .hero p.fokus::before {{ content:' · '; opacity:.7; }}
   .hero .badge-stack {{ align-items:flex-start; gap:5px; }}
@@ -356,6 +362,26 @@ section[data-testid="stSidebar"] {{
   background:linear-gradient(180deg,#0A3D6E 0%,#0D476F 100%);
 }}
 section[data-testid="stSidebar"] * {{ color:#FFFFFF !important; }}
+/* tombol pelipat sidebar dinamis (Streamlit >=1.50):
+   - sidebar tertutup -> ">>" (stExpandSidebarButton) biru merek
+   - sidebar terbuka  -> "<<" (stSidebarCollapseButton) putih di atas navy
+   Kedua elemen hanya tampil sesuai keadaan sidebar, jadi warna ikut berubah. */
+button[data-testid="baseButtonHeader"],
+[data-testid="stExpandSidebarButton"],
+[data-testid="stExpandSidebarButton"] * {{
+  color:#1976C5 !important;
+}}
+button[data-testid="baseButtonHeader"] svg,
+[data-testid="stExpandSidebarButton"] svg {{
+  fill:#1976C5 !important; stroke:#1976C5 !important;
+}}
+section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"],
+section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] * {{
+  color:#FFFFFF !important;
+}}
+section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] svg {{
+  fill:#FFFFFF !important; stroke:#FFFFFF !important;
+}}
 section[data-testid="stSidebar"] hr {{ border-color:rgba(255,255,255,.15); }}
 .sidebar-brand {{ display:flex; align-items:center; gap:12px; padding:6px 4px 14px; }}
 .sidebar-brand .logo {{
@@ -924,7 +950,7 @@ with st.sidebar:
         <div class="sidebar-brand">
           <div class="logo">{bps_logo(44)}</div>
           <div>
-            <b>Dashboard<br/>Statistik Daerah</b>
+            <b>NewBaramendoan</b>
             <span>BPS Kab. Banjarnegara</span>
           </div>
         </div>
@@ -979,15 +1005,16 @@ st.markdown(
       </div>
       <div class="hero-main">
         <div class="hero-text">
-          <h1>Profil Statistik {judul_wilayah}</h1>
-          <p>Fokus statistik: <b>{fokus_text}</b></p>
+          <h1>NewBaramendoan</h1>
+          <p class="subjudul">New Banjarnegara Mencari Data tanpa Dolan</p>
+          <p><b>{fokus_text}</b></p>
           <p class="fokus">Periode {rentang[0]}–{rentang[-1]}</p>
         </div>
         <div class="hero-side">
           <div class="hero-stamp">{data_updated_at():%d %b %Y %H:%M}</div>
           <div class="badge-stack">
             <span>Indikator difokuskan : {len(indikator_pick)}</span>
-            <span>Indikator terpantau : {len(CANONICAL)}</span>
+            <span>Data Statistik : {len(CANONICAL)}</span>
           </div>
         </div>
       </div>
@@ -1239,7 +1266,7 @@ for pos, name in enumerate(CANONICAL):
         sub_html += f"<span>({n_var} varian)</span>"
     mini_cards_html.append(mini_card(name, val_html, sub_html, True, bar))
 
-section("Indikator Terpantau",
+section("Data statistik",
         f"{canon_filled} dari {len(CANONICAL)} sudah memiliki data")
 st.markdown('<div class="mini-grid">' + "".join(mini_cards_html) + "</div>",
             unsafe_allow_html=True)
@@ -1410,7 +1437,7 @@ st.markdown(
         </div>
       </div>
       <div class="footnote-line">© Badan Pusat Statistik ·
-        Dashboard Statistik Daerah</div>
+        NewBaramendoan</div>
     </div>
     """,
     unsafe_allow_html=True,
